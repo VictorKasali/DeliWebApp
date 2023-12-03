@@ -1,19 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: your-app-deployment
+  name: deliwebapp
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: your-app
+      app: deliwebapp
   template:
     metadata:
       labels:
-        app: your-app
+        app: deliwebapp
     spec:
-      containers:
-      - name: your-app
-        image: your-docker-registry/your-app:latest
+    containers:
+      - name: deliwebapp
+        image: victork01/deliwebapp:latest
         ports:
         - containerPort: 8080
+        imagePullSecrets:
+      - name: regcred

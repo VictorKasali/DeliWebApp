@@ -19,5 +19,16 @@ pipeline {
                 }
             }
         }
+        stage('Deploy to Kubernetes') {
+            steps {
+                sh 'kubectl apply -f deployment.yml'
+                sh 'kubectl apply -f service.yml'
+            }
+        }
+        stage('Get Service Details') {
+            steps {
+                sh 'kubectl get service -o jsonpath="{.status.loadBalancer.ingress[0].hostname}"'
+            }
+        }
     }
 }
