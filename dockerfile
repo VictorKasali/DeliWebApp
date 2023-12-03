@@ -13,17 +13,20 @@ RUN mvn dependency:go-offline -B
 # Copy your other files
 COPY src ./src
 
-# Build the project and package it as a jar
+# Build the project and package it as a war
 RUN mvn package
 
-# Use openjdk:8-jdk-alpine for the final image
-FROM openjdk:8-jdk-alpine
+# Use tomcat:8.0-jre8 as the final image
+FROM tomcat:8.0-jre8
 
-# Copy the jar file from the build stage
-COPY --from=build /app/target/your-app.jar /your-app.jar
+# Remove the default Tomcat applications
+RUN rm -rf /usr/local/tomcat/webapps/*
+
+# Copy the war file from the build stage
+COPY --from=build /app/target/DeliApp.war /usr/local/tomcat/webapps/ROOT.war
 
 # Make port 8080 available to the world outside this container
 EXPOSE 8080
 
-# Run the application when the container launches
-CMD ["java", "-jar", "/your-app.jar"]
+# Run the Tomcat server
+CMD ["catalina.sh", "run"]
